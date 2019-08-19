@@ -1,21 +1,19 @@
 
 public class TennisGame1 implements TennisGame {
 
-    private int playerOneScore = 0;
-    private int playerTwoScore = 0;
-    private String player1Name;
-    private String player2Name;
+    private final Player player1;
+    private final Player player2;
 
     public TennisGame1(String player1Name, String player2Name) {
-        this.player1Name = player1Name;
-        this.player2Name = player2Name;
+        this.player1 = new Player(player1Name, 0);
+        this.player2 = new Player(player2Name, 0);
     }
 
     public void wonPoint(String playerName) {
-        if (playerName.equals(player1Name)) {
-            playerOneScore += 1;
+        if (player1.isCalled(playerName)) {
+            player1.addOnePoint();
         } else {
-            playerTwoScore += 1;
+            player2.addOnePoint();
         }
     }
 
@@ -29,57 +27,33 @@ public class TennisGame1 implements TennisGame {
     }
 
     private boolean isPlayerScoreOverForty() {
-        return playerOneScore >= 4 || playerTwoScore >= 4;
+        return player1.getPlayerScore() >= 4 || player2.getPlayerScore() >= 4;
     }
 
     private boolean isScoreTied() {
-        return playerOneScore == playerTwoScore;
+        return player1.getPlayerScore() == player2.getPlayerScore();
     }
 
     private String getStandardScore() {
-        String score = convertScoreToString(playerOneScore);
-        score += "-";
-        score += convertScoreToString(playerTwoScore);
-
-        return score;
-    }
-
-    private String convertScoreToString(int playerScore) {
-        String[] scores = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
-        return scores[playerScore];
+        return player1.getStringScore()+"-"+player2.getStringScore();
     }
 
     private String getScoreOver40() {
-        if (hasPlayerOneAdvantage()) {
-            return "Advantage player1";
-        } else if (hasPlayerTwoAdvantage()) {
-            return "Advantage player2";
-        } else if (isPlayerOneWinning()) {
-            return "Win for player1";
-        } else {
-            return "Win for player2";
-        }
+        if(isAdvantage())
+            return (player1.getPlayerScore() > player2.getPlayerScore()) ? "Advantage player1" : "Advantage player2";
+        else
+            return (player1.getPlayerScore() > player2.getPlayerScore()) ? "Win for player1" : "Win for player2";
     }
 
-    private boolean isPlayerOneWinning() {
-        int scoreDifference = playerOneScore - playerTwoScore;
-        return scoreDifference >= 2;
-    }
-
-    private boolean hasPlayerOneAdvantage() {
-        int scoreDifference = playerOneScore - playerTwoScore;
-        return scoreDifference == 1;
-    }
-
-    private boolean hasPlayerTwoAdvantage() {
-        int scoreDifference = playerOneScore - playerTwoScore;
-        return scoreDifference == -1;
+    private boolean isAdvantage() {
+        int scoreDifference = player1.getPlayerScore() - player2.getPlayerScore();
+        return Math.abs(scoreDifference)== 1;
     }
 
     private String getTiedScore() {
         String[] scores = new String[]{"Love-All", "Fifteen-All", "Thirty-All"};
-        if (playerOneScore > 2 )
+        if (player1.getPlayerScore() > 2 )
             return "Deuce";
-        return scores[playerOneScore];
+        return scores[player1.getPlayerScore()];
     }
 }
