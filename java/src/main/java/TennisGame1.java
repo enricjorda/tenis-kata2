@@ -20,47 +20,25 @@ public class TennisGame1 implements TennisGame {
     }
 
     public String getScore() {
-        String score = "";
-        if (playerOneScore == playerTwoScore) {
-            score = getTiedScore();
-        } else if (playerOneScore >= 4 || playerTwoScore >= 4) {
-            score = getScoreOver40();
-        } else {
-            score = getStandardScore(score);
-        }
+        if (playerOneScore == playerTwoScore)
+            return getTiedScore();
+        else if (playerOneScore >= 4 || playerTwoScore >= 4)
+            return getScoreOver40();
+        else
+            return getStandardScore();
+    }
+
+    private String getStandardScore() {
+        String score = convertScoreToString( playerOneScore);
+        score += "-";
+        score += convertScoreToString( playerTwoScore);
+
         return score;
     }
 
-    private String getStandardScore(String score) {
-        int tempScore;
-        for (int i = 1; i < 3; i++) {
-            if (i == 1) {
-                tempScore = playerOneScore;
-            } else {
-                score += "-";
-                tempScore = playerTwoScore;
-            }
-            score = convertScoreToString(score, tempScore);
-        }
-        return score;
-    }
-
-    private String convertScoreToString(String score, int tempScore) {
-        switch (tempScore) {
-            case 0:
-                score += "Love";
-                break;
-            case 1:
-                score += "Fifteen";
-                break;
-            case 2:
-                score += "Thirty";
-                break;
-            case 3:
-                score += "Forty";
-                break;
-        }
-        return score;
+    private String convertScoreToString(int playerScore) {
+        String[] scores = new String[] {"Love", "Fifteen","Thirty","Forty"};
+        return scores[playerScore];
     }
 
     private String getScoreOver40() {
