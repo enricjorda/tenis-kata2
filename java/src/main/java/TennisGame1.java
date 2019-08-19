@@ -1,8 +1,8 @@
 
 public class TennisGame1 implements TennisGame {
-    
-    private int m_score1 = 0;
-    private int m_score2 = 0;
+
+    private int playerOneScore = 0;
+    private int playerTwoScore = 0;
     private String player1Name;
     private String player2Name;
 
@@ -12,65 +12,80 @@ public class TennisGame1 implements TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            m_score1 += 1;
-        else
-            m_score2 += 1;
+        if (playerName.equals(player1Name)) {
+            playerOneScore += 1;
+        } else {
+            playerTwoScore += 1;
+        }
     }
 
     public String getScore() {
         String score = "";
-        int tempScore=0;
-        if (m_score1==m_score2)
-        {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
-        }
-        else if (m_score1>=4 || m_score2>=4)
-        {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
-        }
-        else
-        {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = m_score1;
-                else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
-            }
+        if (playerOneScore == playerTwoScore) {
+            score = getTiedScore();
+        } else if (playerOneScore >= 4 || playerTwoScore >= 4) {
+            score = getScoreOver40();
+        } else {
+            score = getStandardScore(score);
         }
         return score;
+    }
+
+    private String getStandardScore(String score) {
+        int tempScore;
+        for (int i = 1; i < 3; i++) {
+            if (i == 1) {
+                tempScore = playerOneScore;
+            } else {
+                score += "-";
+                tempScore = playerTwoScore;
+            }
+            score = convertScoreToString(score, tempScore);
+        }
+        return score;
+    }
+
+    private String convertScoreToString(String score, int tempScore) {
+        switch (tempScore) {
+            case 0:
+                score += "Love";
+                break;
+            case 1:
+                score += "Fifteen";
+                break;
+            case 2:
+                score += "Thirty";
+                break;
+            case 3:
+                score += "Forty";
+                break;
+        }
+        return score;
+    }
+
+    private String getScoreOver40() {
+        int scoreDifference = playerOneScore - playerTwoScore;
+        if (scoreDifference == 1) {
+            return "Advantage player1";
+        } else if (scoreDifference == -1) {
+            return "Advantage player2";
+        } else if (scoreDifference >= 2) {
+            return "Win for player1";
+        } else {
+            return "Win for player2";
+        }
+    }
+
+    private String getTiedScore() {
+        switch (playerOneScore) {
+            case 0:
+                return "Love-All";
+            case 1:
+                return "Fifteen-All";
+            case 2:
+                return "Thirty-All";
+            default:
+                return "Deuce";
+        }
     }
 }
